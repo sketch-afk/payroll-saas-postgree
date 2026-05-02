@@ -12,8 +12,8 @@ const NAV = [
   { href: '/leaves',       icon: '◐', label: 'Leaves'      },
 ];
 
-export default function Sidebar() {
-  const path    = usePathname();
+export default function Sidebar({ companyName }) {
+  const path = usePathname();
   const { data: session } = useSession();
 
   return (
@@ -28,7 +28,7 @@ export default function Sidebar() {
           <div>
             <div className="font-display font-bold text-base" style={{ color: '#C9963A' }}>PayCore</div>
             <div className="font-mono text-xs truncate max-w-28" style={{ color: '#3A3A5C' }}>
-              {session?.user?.name || 'Loading…'}
+              {companyName || 'Loading…'}
             </div>
           </div>
         </div>
@@ -62,7 +62,7 @@ export default function Sidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-xs font-display font-bold truncate" style={{ color: '#C4C4DA' }}>
-              {session?.user?.name || '—'}
+              {companyName || '—'}
             </div>
             <div className="text-xs truncate font-mono" style={{ color: '#3A3A5C' }}>
               {session?.user?.email || '—'}

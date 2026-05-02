@@ -6,9 +6,8 @@ export async function GET() {
   try {
     const cid = await requireCompany();
 
-    const [empStats, payStats, deptStats, leaveStats, recentPay, trendStats] =
+    const [empStats, payStats, deptStats, leaveStats, recentPay, trendStats, companyRes] =
       await Promise.all([
-        // FIX: Cast COUNT and SUM to integers (::int) so frontend gets numbers, not strings
         query(
           `SELECT 
               COUNT(*)::int AS total,
@@ -18,7 +17,7 @@ export async function GET() {
            FROM employees WHERE company_id=:cid`,
           { cid }
         ),
-        // FIX: Cast financial SUMs to numeric/floats
+
         query(
           `SELECT 
               COALESCE(SUM(gross_salary), 0)::numeric AS total_gross,
@@ -32,7 +31,7 @@ export async function GET() {
              AND pay_year  = EXTRACT(YEAR  FROM CURRENT_DATE)`,
           { cid }
         ),
-        // FIX: Cast COUNT to integer
+        
         query(
           `SELECT dept_name, COUNT(e.emp_id)::int AS headcount
            FROM departments d
@@ -42,14 +41,14 @@ export async function GET() {
            ORDER BY headcount DESC`,
           { cid }
         ),
-        // FIX: Cast COUNT to integer
+        
         query(
           `SELECT COUNT(*)::int AS pending 
            FROM leaves
            WHERE company_id=:cid AND status='PENDING'`,
           { cid }
         ),
-        // FIX: Postgres conventionally uses LIMIT instead of FETCH FIRST
+        
         query(
           `SELECT full_name, dept_name, net_salary, pay_month, pay_year, status
            FROM vw_payroll WHERE company_id=:cid
@@ -57,7 +56,7 @@ export async function GET() {
            LIMIT 6`,
           { cid }
         ),
-        // FIX: Cast financial trend data to numeric
+        
         query(
           `SELECT pay_month,
               COALESCE(SUM(gross_salary), 0)::numeric AS total_gross,
@@ -69,9 +68,17 @@ export async function GET() {
            ORDER BY pay_month ASC`,
           { cid }
         ),
+
+        query(
+          `SELECT name FROM companies WHERE company_id = :cid`,
+          { cid }
+        )
       ]);
 
+    const companyName = companyRes.rows[0]?.name || 'Your Workspace';
+
     return NextResponse.json({
+      companyName: companyName, 
       employees: empStats.rows[0],
       payroll: payStats.rows[0],
       departments: deptStats.rows,
@@ -79,8 +86,8 @@ export async function GET() {
       recentPayroll: recentPay.rows,
       payrollTrend: trendStats.rows,
     });
+    
   } catch (e) {
-    // FIX: Updated to match your exact auth helper error string
     if (e.message === "UNAUTHORIZED_ACCESS") return unauthorized();
     return serverError(e);
   }

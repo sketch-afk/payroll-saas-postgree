@@ -9,7 +9,6 @@ export async function GET(req) {
     const status = searchParams.get("status");
     const emp = searchParams.get("emp");
 
-    // POSTGRES FIX: Use CONCAT_WS for safe null-handling
     let sql = `
       SELECT l.leave_id, l.leave_type, l.from_date, l.to_date,
              l.days, l.reason, l.status, l.applied_at,
@@ -65,7 +64,6 @@ export async function POST(req) {
       );
     }
 
-    // Validate that the end date is not before the start date
     if (new Date(from_date) > new Date(to_date)) {
       return NextResponse.json(
         { error: "to_date cannot be before from_date" },
@@ -73,7 +71,6 @@ export async function POST(req) {
       );
     }
 
-    // POSTGRES FIX: Use CAST() instead of ::date to protect the db.js regex
     await query(
       `INSERT INTO leaves (company_id, emp_id, leave_type, from_date, to_date, reason, status)
        VALUES (:cid, :eid, :type, CAST(:fd AS DATE), CAST(:td AS DATE), :reason, 'PENDING')`,
@@ -94,7 +91,6 @@ export async function POST(req) {
   } catch (e) {
     if (e.message === "UNAUTHORIZED_ACCESS") return unauthorized();
 
-    // BUG FIX: Wrapped this in an IF statement so it doesn't swallow real server errors
     if (e.message && e.message.includes("invalid input syntax for type date")) {
       return NextResponse.json(
         { error: "Invalid date format. Expected YYYY-MM-DD." },

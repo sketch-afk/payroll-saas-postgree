@@ -66,7 +66,6 @@ export default function LeavesPage() {
     fetchLeaves();
   }
 
-  // POSTGRES FIX: lowercase status
   const pending  = leaves.filter(l => l.status === 'PENDING').length;
   const approved = leaves.filter(l => l.status === 'APPROVED').length;
 
@@ -130,16 +129,14 @@ export default function LeavesPage() {
             </thead>
             <tbody>
               {leaves.map(l => (
-                <tr key={l.leave_id}> {/* POSTGRES FIX: lowercase */}
+                <tr key={l.leave_id}> 
                   <td className="pl-6">
                     <div className="flex items-center gap-3">
                       <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
                            style={{ background:'rgba(201,150,58,0.12)', color:'#C9963A' }}>
-                        {/* POSTGRES FIX: lowercase full_name */}
                         {l.full_name?.[0]}
                       </div>
                       <div>
-                        {/* POSTGRES FIX: lowercase full_name and dept_name */}
                         <div className="font-medium text-sm" style={{ color:'#EEEEF5' }}>{l.full_name}</div>
                         <div className="text-xs" style={{ color:'#3A3A5C' }}>{l.dept_name||'—'}</div>
                       </div>
@@ -156,25 +153,20 @@ export default function LeavesPage() {
                     </span>
                   </td>
                   <td className="font-mono text-xs" style={{ color:'#5C5C85' }}>
-                    {/* POSTGRES FIX: lowercase from_date and to_date */}
                     {new Date(l.from_date).toLocaleDateString('en-IN')} →{' '}
                     {new Date(l.to_date).toLocaleDateString('en-IN')}
                   </td>
                   <td className="text-center font-mono font-bold" style={{ color:'#C9963A' }}>{l.days}</td> {/* POSTGRES FIX: lowercase */}
                   <td className="text-sm" style={{ color:'#5C5C85', maxWidth:200 }}>
-                    {/* POSTGRES FIX: lowercase reason */}
                     <span className="truncate block" style={{ maxWidth:180 }}>{l.reason||'—'}</span>
                   </td>
                   <td className="font-mono text-xs" style={{ color:'#3A3A5C' }}>
-                    {/* POSTGRES FIX: lowercase applied_at */}
                     {l.applied_at ? new Date(l.applied_at).toLocaleDateString('en-IN') : '—'}
                   </td>
                   <td>
-                    {/* POSTGRES FIX: lowercase status */}
                     <span className={`badge badge-${(l.status||'').toLowerCase()}`}>{l.status}</span>
                   </td>
                   <td className="text-right pr-6">
-                    {/* POSTGRES FIX: lowercase status and leave_id */}
                     {l.status === 'PENDING' && (
                       <div className="flex gap-2 justify-end">
                         <button onClick={() => updateStatus(l.leave_id,'APPROVED')}
@@ -211,7 +203,6 @@ export default function LeavesPage() {
               <label className="label">Employee *</label>
               <select value={form.emp_id} onChange={set('emp_id')} required className="field">
                 <option value="">Select Employee</option>
-                {/* POSTGRES FIX: lowercase emp_id and full_name */}
                 {employees.map(e => <option key={e.emp_id} value={e.emp_id}>{e.full_name}</option>)}
               </select>
             </div>
