@@ -55,7 +55,6 @@ export default function DepartmentsPage() {
     fetchDepts();
   }
 
-  // POSTGRES FIX: lowercase employee_count and total_payroll
   const totalHead  = depts.reduce((s, d) => s + Number(d.employee_count||0), 0);
   const totalPayrl = depts.reduce((s, d) => s + Number(d.total_payroll||0), 0);
 
@@ -105,10 +104,8 @@ export default function DepartmentsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {depts.map((d, i) => {
-            // POSTGRES FIX: lowercase employee_count
             const pct = totalHead ? Math.round((d.employee_count / totalHead) * 100) : 0;
             return (
-              // POSTGRES FIX: lowercase dept_id
               <div key={d.dept_id} className={`glass rounded-2xl p-6 anim-up delay-${Math.min(i+2,6)} group`}
                    style={{ transition:'border-color 0.2s' }}
                    onMouseEnter={e => e.currentTarget.style.borderColor='rgba(201,150,58,0.2)'}
@@ -117,13 +114,11 @@ export default function DepartmentsPage() {
                   <div className="flex items-center gap-3">
                     <span style={{ fontSize: 28 }}>{ICONS[i % ICONS.length]}</span>
                     <div>
-                      {/* POSTGRES FIX: lowercase dept_name and location */}
                       <h3 className="font-display font-bold text-lg" style={{ color:'#EEEEF5' }}>{d.dept_name}</h3>
                       <p className="text-xs" style={{ color:'#3A3A5C' }}>{d.location || 'No location set'}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    {/* POSTGRES FIX: lowercase employee_count */}
                     <div className="font-display font-extrabold text-2xl" style={{ color:'#C9963A' }}>{d.employee_count}</div>
                     <div className="text-xs" style={{ color:'#3A3A5C' }}>employees</div>
                   </div>
@@ -142,20 +137,17 @@ export default function DepartmentsPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="rounded-xl p-3" style={{ background:'rgba(255,255,255,0.03)' }}>
                     <div className="label text-xs mb-0.5">Manager</div>
-                    {/* POSTGRES FIX: lowercase manager_name */}
                     <div className="text-sm" style={{ color:'#C4C4DA' }}>{d.manager_name || 'Not set'}</div>
                   </div>
                   <div className="rounded-xl p-3" style={{ background:'rgba(255,255,255,0.03)' }}>
                     <div className="label text-xs mb-0.5">Monthly Payroll</div>
                     <div className="text-sm font-mono font-bold" style={{ color:'#3DBF82' }}>
-                      {/* POSTGRES FIX: lowercase total_payroll */}
                       {d.total_payroll ? `₹${Number(d.total_payroll).toLocaleString('en-IN')}` : '—'}
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-4 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                  {/* POSTGRES FIX: lowercase dept_id */}
                   <button onClick={() => deleteDept(d.dept_id)} className="btn-danger text-xs">
                     🗑 Delete
                   </button>

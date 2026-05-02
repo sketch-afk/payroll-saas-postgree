@@ -11,7 +11,7 @@ const INDUSTRIES = [
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [step, setStep]     = useState(1); // 2-step form
+  const [step, setStep]     = useState(1); 
   const [form, setForm]     = useState({
     name:'', email:'', password:'', confirm:'', industry:'', country:'India',
   });

@@ -241,30 +241,27 @@ export default function EmployeesPage() {
             </thead>
             <tbody>
               {employees.map(emp => (
-                <tr key={emp.emp_id}> {/* POSTGRES FIX: lowercase */}
+                <tr key={emp.emp_id}> 
                   <td className="pl-6">
                     <div className="flex items-center gap-3">
-                      <Avatar name={emp.full_name} /> {/* POSTGRES FIX: lowercase */}
+                      <Avatar name={emp.full_name} /> 
                       <div>
-                        <div className="font-medium text-sm" style={{ color:'#EEEEF5' }}>{emp.full_name}</div> {/* POSTGRES FIX: lowercase */}
-                        <div className="text-xs font-mono" style={{ color:'#3A3A5C' }}>{emp.email}</div> {/* POSTGRES FIX: lowercase */}
+                        <div className="font-medium text-sm" style={{ color:'#EEEEF5' }}>{emp.full_name}</div> 
+                        <div className="text-xs font-mono" style={{ color:'#3A3A5C' }}>{emp.email}</div> 
                       </div>
                     </div>
                   </td>
                   <td>
-                    <div className="text-sm" style={{ color:'#C4C4DA' }}>{emp.job_title || '—'}</div> {/* POSTGRES FIX: lowercase */}
-                    <div className="text-xs" style={{ color:'#3A3A5C' }}>{emp.dept_name || '—'}</div> {/* POSTGRES FIX: lowercase */}
+                    <div className="text-sm" style={{ color:'#C4C4DA' }}>{emp.job_title || '—'}</div> 
+                    <div className="text-xs" style={{ color:'#3A3A5C' }}>{emp.dept_name || '—'}</div> 
                   </td>
                   <td className="font-mono text-xs" style={{ color:'#5C5C85' }}>
-                    {/* POSTGRES FIX: lowercase */}
                     {emp.hire_date ? new Date(emp.hire_date).toLocaleDateString('en-IN') : '—'}
                   </td>
                   <td className="text-right font-mono font-bold text-sm" style={{ color:'#3DBF82' }}>
-                    {/* POSTGRES FIX: lowercase */}
                     {emp.gross_salary ? `₹${Number(emp.gross_salary).toLocaleString('en-IN')}` : '—'}
                   </td>
                   <td>
-                    {/* POSTGRES FIX: lowercase */}
                     <span className={`badge badge-${(emp.status||'').toLowerCase()}`}>{emp.status}</span>
                   </td>
                   <td className="text-right pr-6">
@@ -320,7 +317,7 @@ export default function EmployeesPage() {
       <Modal
         open={!!modal}
         onClose={() => setModal(null)}
-        title={modal === 'add' ? 'Add New Employee' : `Edit — ${modal?.full_name}`} // POSTGRES FIX: lowercase full_name
+        title={modal === 'add' ? 'Add New Employee' : `Edit — ${modal?.full_name}`}  
       >
         {modal && (
           <EmployeeForm

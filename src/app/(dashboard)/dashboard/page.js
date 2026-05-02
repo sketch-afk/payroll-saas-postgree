@@ -40,13 +40,13 @@ export default function DashboardPage() {
       .catch(() => setLoading(false));
   }, []);
 
+
   const barData = useMemo(() => {
     if (!stats?.payrollTrend || stats.payrollTrend.length === 0) {
       return [];
     }
 
     return stats.payrollTrend.map(pt => ({
-      // POSTGRES FIX: lowercase keys
       month: MONTHS[(pt.pay_month) - 1], 
       gross: Number(pt.total_gross || 0),
       net:   Number(pt.total_net || 0),
@@ -67,7 +67,6 @@ export default function DashboardPage() {
   const depts = stats?.departments || [];
 
   const pieData = depts.length
-    // POSTGRES FIX: lowercase dept_name and headcount
     ? depts.map(d => ({ name: d.dept_name, value: Number(d.headcount) }))
     : [];
 
@@ -79,7 +78,7 @@ export default function DashboardPage() {
           {now.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' })}
         </div>
         <h1 className="page-title">
-          Welcome, <span style={{ color: '#C9963A' }}>{session?.user?.name}</span>
+          Welcome, <span style={{ color: '#C9963A' }}>{stats?.companyName || session?.user?.name}</span>
         </h1>
         <p className="page-subtitle">Here's your payroll snapshot for {MONTHS[now.getMonth()]} {now.getFullYear()}</p>
       </div>
@@ -87,18 +86,15 @@ export default function DashboardPage() {
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 ">
         <StatCard delay="1" icon="👥" label="Total Employees"  color="#C9963A"
-          // POSTGRES FIX: lowercase total and active
+          
           value={emp?.total ?? '—'} sub={`${emp?.active ?? 0} active`} />
         <StatCard delay="2" icon="💰" label="Gross Payroll" color="#3DBF82"
-          // POSTGRES FIX: lowercase total_gross
           value={pay?.total_gross ? `₹${(Number(pay.total_gross)/1000).toFixed(0)}k` : '—'}
           sub={MONTHS[now.getMonth()]} />
         <StatCard delay="3" icon="🏦" label="Net Disbursed" color="#C9963A"
-          // POSTGRES FIX: lowercase total_net and count
           value={pay?.total_net ? `₹${(Number(pay.total_net)/1000).toFixed(0)}k` : '—'}
           sub={`${pay?.count ?? 0} processed`} />
         <StatCard delay="4" icon="📋" label="Pending Leaves" color="#E0A03A"
-          // POSTGRES FIX: lowercase pending
           value={stats?.leaves?.pending ?? '—'} sub="awaiting approval" />
       </div>
 
@@ -200,20 +196,15 @@ export default function DashboardPage() {
           <tbody>
             {stats?.recentPayroll?.length ? stats.recentPayroll.map((r, i) => (
               <tr key={i}>
-                {/* POSTGRES FIX: lowercase full_name */}
                 <td className="pl-6 font-medium" style={{ color: '#EEEEF5' }}>{r.full_name}</td>
-                {/* POSTGRES FIX: lowercase dept_name */}
                 <td style={{ color: '#5C5C85' }}>{r.dept_name || '—'}</td>
                 <td className="font-mono text-xs" style={{ color: '#5C5C85' }}>
-                  {/* POSTGRES FIX: lowercase pay_month and pay_year */}
                   {MONTHS[(r.pay_month||1)-1]} {r.pay_year}
                 </td>
                 <td className="text-right font-mono font-bold" style={{ color: '#3DBF82' }}>
-                  {/* POSTGRES FIX: lowercase net_salary */}
                   ₹{Number(r.net_salary||0).toLocaleString('en-IN')}
                 </td>
                 <td className="pr-6">
-                  {/* POSTGRES FIX: lowercase status */}
                   <span className={`badge badge-${(r.status||'').toLowerCase()}`}>{r.status}</span>
                 </td>
               </tr>
@@ -229,7 +220,6 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick deductions */}
-      {/* POSTGRES FIX: lowercase total_gross */}
       {pay && (Number(pay.total_gross) > 0) && (
         <div className="grid grid-cols-2 gap-4 anim-up delay-6">
           <div className="glass rounded-2xl p-5 flex items-center gap-4">
@@ -238,7 +228,6 @@ export default function DashboardPage() {
             <div>
               <div className="label">PF Deductions</div>
               <div className="font-mono font-bold text-xl" style={{ color: '#EEEEF5' }}>
-                {/* POSTGRES FIX: lowercase total_pf */}
                 ₹{Number(pay.total_pf||0).toLocaleString('en-IN')}
               </div>
             </div>
@@ -249,7 +238,6 @@ export default function DashboardPage() {
             <div>
               <div className="label">Tax Deductions</div>
               <div className="font-mono font-bold text-xl" style={{ color: '#EEEEF5' }}>
-                {/* POSTGRES FIX: lowercase total_tax */}
                 ₹{Number(pay.total_tax||0).toLocaleString('en-IN')}
               </div>
             </div>
